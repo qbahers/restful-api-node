@@ -2,8 +2,8 @@
 // ----------
 
 // Call the packages we need
-var express    = require('express');	// call express
-var app        = express();		// define our app using express
+var express    = require('express');	  // call express
+var app        = express();		  // define our app using express
 var bodyParser = require('body-parser');
 
 // Configure app to use bodyParser().
@@ -11,12 +11,18 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;	// set our port
+var port = process.env.PORT || 8080;	  // set our port
+
+var mongoose = require('mongoose');
+// Connect to our database
+mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o');
+
+var Bear = require('./app/models/bear');
 
 // Routes for our API
 // ------------------
 
-var router = express.Router();		// get an instance of the express Router
+var router = express.Router();		  // get an instance of the express Router
 
 // Test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
