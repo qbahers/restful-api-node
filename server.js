@@ -2,8 +2,8 @@
 // ==========
 
 // Call the packages we need
-var express    = require('express');	  // call express
-var app        = express();		  // define our app using express
+var express    = require('express');        // call express
+var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 
 // Configure app to use bodyParser().
@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;	  // set our port
+var port = process.env.PORT || 8080;        // set our port
 
 var mongoose = require('mongoose');
 // Connect to our database
@@ -22,7 +22,7 @@ var Bear = require('./app/models/bear');
 // Routes for our API
 // ==================
 
-var router = express.Router();		  // get an instance of the express Router
+var router = express.Router();              // get an instance of the express Router
 
 // Middleware to use for all requests
 router.use(function(req, res, next) {
@@ -45,32 +45,47 @@ router.route('/bears')
 
     // Create a bear (accessed at POST http://localhost:8080/api/bears)
     .post(function(req, res) {
-    
-	var bear = new Bear();	    // create a new instance of the Bear model
-	bear.name = req.body.name;  // set the bears name (comes from the request)
 
-	// save the bear and check for errors
-	bear.save(function(err) {
-	    if (err)
-		res.send(err);
+        var bear = new Bear();      // create a new instance of the Bear model
+        bear.name = req.body.name;  // set the bears name (comes from the request)
 
-	    res.json({ message: 'Bear created!' });
-	});
+        // Save the bear and check for errors
+        bear.save(function(err) {
+            if (err)
+                res.send(err);
 
+            res.json({ message: 'Bear created!' });
+        });
     })
 
     // Get all the bears (accessed at GET http://localhost:8080/api/bears)
     .get(function(req, res) {
-	Bear.find(function(err, bears) {
-	    if (err)
-		res.send(err);
+        Bear.find(function(err, bears) {
+            if (err)
+                res.send(err);
 
-	    res.json(bears);
-	});
+            res.json(bears);
+        });
     });
+
+// On routes that end in /bears/:bear_id
+// -------------------------------------
+
+router.route('/bears/:bear_id')
+
+    .get(function(req, res) {
+        Bear.findById(req.params.bear_id, function(err, bear) {
+            if (err)
+                res.send(err);
+
+            res.json(bear);
+        });
+    });
+
 
 // Register Our Routes
 // ===================
+
 // All of our routes will be prefixed with /api
 app.use('/api', router);
 
